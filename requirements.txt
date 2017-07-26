@@ -1,0 +1,8 @@
+requests
+jsonapi-requests
+certifi
+pyserial
+python-osc
+monotonic
+idna
+tenacity
