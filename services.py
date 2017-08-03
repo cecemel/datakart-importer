@@ -23,7 +23,7 @@ def create_session(api, raw_data_id, description, anchor_configuration, start_ti
     endpoint = api.endpoint('tracking-sessions')
     data = endpoint.post(object=JsonApiObject(
         attributes={'description': description,
-                    "raw-tracking-data-id": raw_data_id,
+                    "raw-tracking-session-id": raw_data_id,
                     "start-time": start_time},
         relationships={'anchors-configuration':  {"data": anchor_configuration.data.as_data()}},
         type='tracking-sessions'))
@@ -51,7 +51,7 @@ def store_deployed_anchors(api, anchors):
 
         data = endpoint.post(object=JsonApiObject(
             attributes={'anchor-label': anchor["label"]},
-            relationships={"point-coordinates": {"data": point.data.as_data()}},
+            relationships={"point-coordinate": {"data": point.data.as_data()}},
             type='deployed-anchors'))
 
         stored_anchors.append(data)
@@ -60,10 +60,10 @@ def store_deployed_anchors(api, anchors):
 
 
 def store_coordinates(api, coordinates_dict):
-    endpoint = api.endpoint('points-coordinates')
+    endpoint = api.endpoint('point-coordinates')
     data = endpoint.post(object=JsonApiObject(
         attributes=coordinates_dict,
-        type='points-coordinates'))
+        type='point-coordinates'))
     return data
 
 
@@ -73,11 +73,11 @@ def get_http_session():
 
 
 def store_tracking_session_location_element(http_session, session_id, data):
-    response = http_session.patch('http://localhost/raw-trackings-data/{}/data-points'.format(session_id), json=data)
+    response = http_session.post('http://localhost/raw-tracking-sessions/{}/data-points'.format(session_id), json=data)
 
 
 def get_session_data(session_id):
-    return requests.get('http://localhost/raw-trackings-data/{}/data-points'.format(session_id)).json()
+    return requests.get('http://localhost/raw-tracking-sessions/{}/data-points'.format(session_id)).json()
 
 
 # queue

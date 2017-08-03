@@ -7,7 +7,6 @@ from services import queue_reader, \
 
 from stats import print_stats
 import datetime
-import uuid
 
 
 def cli(queue):
@@ -19,7 +18,7 @@ def setup_poszyx(data):
     serial_port = get_serial_ports()[1].device
 
     remote_id = 0x6166                 # remote device network ID
-    remote = False                 # whether to use a remote device
+    remote = True                 # whether to use a remote device
     if not remote:
         remote_id = None
 
@@ -42,12 +41,12 @@ def setup_poszyx(data):
         anchors.append(device_coordinates)
 
 
-    # algorithm = POZYX_POS_ALG_TRACKING  # positioning algorithm to use
-    # dimension = POZYX_3D              # positioning dimension
+    algorithm = POZYX_POS_ALG_TRACKING  # positioning algorithm to use
+    dimension = POZYX_3D              # positioning dimension
 
-    algorithm = POZYX_POS_ALG_UWB_ONLY  # positioning algorithm to use
-    dimension = POZYX_2_5D
-    height = 800                      # height of device, required in 2.5D positioning
+    #algorithm = POZYX_POS_ALG_UWB_ONLY  # positioning algorithm to use
+    #dimension = POZYX_2_5D
+    height = 1000                      # height of device, required in 2.5D positioning
 
     pozyx = PozyxSerial(serial_port)
     localizer = ReadyToLocalize(pozyx, osc_udp_client, anchors, algorithm, dimension, height, remote_id)
@@ -59,6 +58,10 @@ def setup_poszyx(data):
 def read_poszyx(queue_instance, localizer):
     while True:
         position = localizer.loop()
+
+        if not position:
+            continue
+
         data = {
             "timestamp": datetime.datetime.utcnow().isoformat(),
             "x-value": position.x,
@@ -70,19 +73,20 @@ def read_poszyx(queue_instance, localizer):
 
 
 if __name__ == "__main__":
+    #0x6858 -> pozyz  remote -> 0x6107  0x6166
     session_data = {"start_time": datetime.datetime.utcnow().isoformat(),
                     "anchors": [
-                        {"label": "0x613e", "type": 1, "coordinates": {"x-value": 0, "y-value": 1270, "z-value": 2000}},
-                        {"label": "0x6107", "type": 1, "coordinates": {"x-value": 1445, "y-value": 0, "z-value": 2000}},
-                        {"label": "0x6136", "type": 1, "coordinates": {"x-value": 1445, "y-value": 1270, "z-value": 2000}},
-                        {"label": "0x6166", "type": 1, "coordinates": {"x-value": 0, "y-value": 0, "z-value": 1000}}
+                        {"label": "0x613e", "type": 1, "coordinates": {"x-value": 0, "y-value": 3705, "z-value": 2000}},
+                        {"label": "0x6107", "type": 1, "coordinates": {"x-value": 4507, "y-value": 5089, "z-value": 2000}},
+                        {"label": "0x6858", "type": 0, "coordinates": {"x-value": 4507, "y-value": 0, "z-value": 2050}},
+                        {"label": "0x6136", "type": 1, "coordinates": {"x-value": 0, "y-value": 0, "z-value": 2050}}
                     ],
-                    "location_description": "somewhere in molenbeek",
-                    "description": "last time"}
+                    "location_description": "tuin molenbeek",
+                    "description": "remote device9"}
 
     # store the meta data
     session = store_session_meta_data(session_data)
-    session_data["id"] = session.data.as_data()["attributes"]["raw-tracking-data-id"]
+    session_data["id"] = session.data.as_data()["attributes"]["raw-tracking-session-id"]
 
 
     # start streaming
