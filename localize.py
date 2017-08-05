@@ -49,8 +49,8 @@ class ReadyToLocalize(object):
         status = self.pozyx.doPositioning(
             position, self.dimension, self.height, self.algorithm, remote_id=self.remote_id)
         if status == POZYX_SUCCESS:
-            self.printPublishPosition(position)
-            return position
+            return self.printPublishPosition(position)
+
         else:
             self.printPublishErrorCode("positioning")
 
@@ -61,9 +61,12 @@ class ReadyToLocalize(object):
             network_id = 0
         print("POS ID {}, x(mm): {pos.x} y(mm): {pos.y} z(mm): {pos.z}".format(
             "0x%0.4x" % network_id, pos=position))
-        if self.osc_udp_client is not None:
-            self.osc_udp_client.send_message(
-                "/position", [network_id, int(position.x), int(position.y), int(position.z)])
+
+        return {
+            "x-value": position.x,
+            "y-value": position.y,
+            "z-value": position.z
+        }
 
     def printPublishErrorCode(self, operation):
         """Prints the Pozyx's error and possibly sends it as a OSC packet"""
