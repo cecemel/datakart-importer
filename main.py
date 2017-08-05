@@ -21,13 +21,13 @@ def setup_poszyx(config_data):
     # shortcut to not have to find out the port yourself
     serial_port = get_serial_ports()[1].device
 
-    remote_id = config_data.get("remote_device")
+    remote_id = hex_string_to_hex(config_data.get("remote_device")) if config_data.get("remote_device") else None
 
     # TODO: still not sure what it does
     # use_processing = True             # enable to send position data through OSC
     # ip = "127.0.0.1"                   # IP for the OSC UDP
     # network_port = 8888                # network port for the OSC UDP
-    # osc_udp_client = None
+    osc_udp_client = None
     # if use_processing:
     #     osc_udp_client = SimpleUDPClient(ip, network_port)
 
@@ -56,12 +56,12 @@ def setup_poszyx(config_data):
     # setup
     pozyx = PozyxSerial(serial_port)
 
-    localizer_instance = ReadyToLocalize(pozyx, None, anchors, algorithm, dimension, height, remote_id)
+    localizer_instance = ReadyToLocalize(pozyx, osc_udp_client, anchors, algorithm, dimension, height, remote_id)
     localizer_instance.setup()
 
     sensor_data = None
     if config_data.get("sensor_data"):
-        sensor_data = Orientation3D(pozyx, None, remote_id)
+        sensor_data = Orientation3D(pozyx, osc_udp_client, remote_id)
         sensor_data.setup()
 
     return {"localizer": localizer_instance, "sensor_data": sensor_data}
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     session_data = get_config(sensor_data=True)
 
     session_data["location_description"] = "tuin molenbeek"
-    session_data["description"] = "refactor test"
+    session_data["description"] = "refactor test 5"
 
 
     # store the meta data
