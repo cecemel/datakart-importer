@@ -90,10 +90,10 @@ def read_poszyx(queue_instance, data_controllers):
 
 
 if __name__ == "__main__":
-    session_data = get_config(sensor_data=True)
+    session_data = get_config()
 
     session_data["location_description"] = "tuin molenbeek"
-    session_data["description"] = "refactor test 5"
+    session_data["description"] = "all data test 2"
 
 
     # store the meta data
