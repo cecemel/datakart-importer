@@ -1,8 +1,10 @@
+import json
 import jsonapi_requests
 from jsonapi_requests import JsonApiObject
 import requests
 from multiprocessing import Process, Queue
 import uuid
+import datetime
 
 
 # JSON API STUFF
@@ -73,6 +75,10 @@ def get_http_session():
 
 
 def store_tracking_session_location_element(http_session, session_id, data):
+    json_string = json.dumps(data)
+    file_name = datetime.datetime.utcnow().isoformat()
+    with open(file_name, 'w') as f:
+        f.write(json_string)
     response = http_session.post('http://localhost/raw-tracking-sessions/{}/data-points'.format(session_id), json=data)
 
 

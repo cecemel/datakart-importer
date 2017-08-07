@@ -73,7 +73,8 @@ def read_poszyx(queue_instance, data_controllers):
 
         position = data_controllers["localizer"].loop()
 
-        if not position:
+        if position == "error":
+            queue_instance.put(position)
             continue
 
         data.update(position)
@@ -81,19 +82,17 @@ def read_poszyx(queue_instance, data_controllers):
         if data_controllers.get("sensor_data"):
             sensor_data = data_controllers["sensor_data"].loop()
 
-            if not sensor_data:  # we don't want inconsistent data if we want acceleration data etc..
-                continue
-
-            data.update(sensor_data)
+            if not sensor_data == "error":
+                data.update(sensor_data)
 
         queue_instance.put(data)
 
 
 if __name__ == "__main__":
-    session_data = get_config()
+    session_data = get_config(sensor_data=True)
 
-    session_data["location_description"] = "tuin molenbeek"
-    session_data["description"] = "all data test 2"
+    session_data["location_description"] = "brussels kart"
+    session_data["description"] = "na het eten run 5?"
 
 
     # store the meta data

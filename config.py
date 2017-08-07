@@ -11,12 +11,12 @@ def get_config(remote=False, sensor_data=False):
 
     basic_config = {"start_time": datetime.datetime.utcnow().isoformat(),
                     "anchors": [
-                        {"label": "0x613e", "type": 1, "coordinates": {"x-value": 0, "y-value": 3705, "z-value": 2000}},
-                        {"label": "0x6107", "type": 1, "coordinates": {"x-value": 4507, "y-value": 5089, "z-value": 2000}},
-                        {"label": "0x6166", "type": 1, "coordinates": {"x-value": 4507, "y-value": 0, "z-value": 2050}},
-                        {"label": "0x6136", "type": 1, "coordinates": {"x-value": 0, "y-value": 0, "z-value": 2050}}
+                        {"label": "0x613e", "type": 1, "coordinates": {"x-value": 13292, "y-value": 11808, "z-value": 2000}},
+                        {"label": "0x6107", "type": 1, "coordinates": {"x-value": 10751, "y-value": 0, "z-value": 2000}},
+                        {"label": "0x6166", "type": 1, "coordinates": {"x-value": 0, "y-value": 0, "z-value": 2000}},
+                        {"label": "0x6136", "type": 1, "coordinates": {"x-value": 4362, "y-value": 13902, "z-value": 2000}}
                     ],
-                    "moving_device_height": 1000,
+                    "moving_device_height": 600,
                 }
 
     if sensor_data:

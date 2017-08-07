@@ -53,6 +53,7 @@ class ReadyToLocalize(object):
 
         else:
             self.printPublishErrorCode("positioning")
+            return "error"
 
     def printPublishPosition(self, position):
         """Prints the Pozyx's position and possibly sends it as a OSC packet"""

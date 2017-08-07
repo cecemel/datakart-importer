@@ -45,6 +45,8 @@ class Orientation3D(object):
             status &= self.pozyx.getCalibrationStatus(calibration_status, self.remote_id)
             if status == POZYX_SUCCESS:
                 return self.publishSensorData(sensor_data, calibration_status)
+            return "error"
+        return "error"
 
     def publishSensorData(self, sensor_data, calibration_status):
         """Makes the OSC sensor data package and publishes it"""
